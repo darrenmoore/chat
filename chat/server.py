@@ -11,14 +11,10 @@ class Server(Factory):
     def __init__(self, Chat = False, protocol = 'telnet'):
         self.Chat = Chat
         self.protocol = protocol
-        return
 
     def start(self, Chat):
-        self.connections_count = 0
-        self.users = {}
-        self.host = '127.0.0.1'
-        self.port = 2020
         self.Chat = Chat
+        self.connections_count = 0
         self._listen(2020,'telnet');
         self._listen(8080,'http');
         reactor.run()
