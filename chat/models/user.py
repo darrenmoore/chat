@@ -22,7 +22,7 @@ class User(Document):
 		'clients': list,
 		'joined': list,
 		'following': list,
-		'away': bool,
+		'status': basestring,
 		'last_activity': datetime.datetime,
 		'created': datetime.datetime,
 		'modes': dict
@@ -31,7 +31,7 @@ class User(Document):
 	required_fields = []
 
 	default_values = {
-		'away': False,
+		'status': 'offline',
 		'profile': {
 			'name': None,
 			'bio': None,
@@ -67,6 +67,8 @@ class User(Document):
 		}
 	]
 
+	statuses = ['online','offline','away','dnd']
+
 	def login(self, client):
 		self['sessions'].append(client.Session.sid())
 		self.save()
@@ -85,6 +87,13 @@ class User(Document):
 				pass
 		self.save()
 
+	def status(self, value):
+		if value not in self.statuses:
+			return False
+		self['status'] = value
+		self.save()
+		return True
+
 	def part_all(self):
 		pass
 		# joined = self['joined']
@@ -93,7 +102,6 @@ class User(Document):
 		# 	channel.part(self, )
 
 	def part(self, user, client):
-
 		if sid is None:
 			self['sessions'] = []
 		else:

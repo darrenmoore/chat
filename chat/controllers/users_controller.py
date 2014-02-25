@@ -123,18 +123,12 @@ class UsersController(AppController):
 		user = self.request.user()
 		return { "code":'USER_SESSIONS_ALL', "data":user }
 
-	def away(self):
+	def status(self, value):
 		if self.request.logged_in() == False:
 			return 'ERR_NOT_LOGGED_IN'
 		user = self.request.user()
-		user['away'] = True
-		user.save()
-		return { "code":'USER_AWAY', "data":user }
-
-	def unaway(self):
-		if self.request.logged_in() == False:
-			return 'ERR_NOT_LOGGED_IN'
-		user = self.request.user()
-		user['away'] = False
-		user.save()
-		return { "code":'USER_UNAWAY', "data":user }
+		if user.status(value):
+			return { "code":'USER_STATUS', "data":user }
+		else:
+			return { "code":'USER_STATUS_INVALID', "data":{ 'status':value } }
+			

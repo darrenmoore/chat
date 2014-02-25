@@ -19,8 +19,7 @@ class TelnetClient(AppClient):
 		'sessions': 	{ 'controller':'UsersController', 'method':'sessions_all' },
 		'forgotten': 	{ 'controller':'UsersController', 'method':'forgotten', 'args':['username'] },
 		'reset': 			{ 'controller':'UsersController', 'method':'reset', 'args':['reset_token','new_password'] },
-		'away': 			{ 'controller':'UsersController', 'method':'away' },
-		'unaway': 		{ 'controller':'UsersController', 'method':'unaway' },
+		'status': 		{ 'controller':'UsersController', 'method':'status', 'args':['value'] },
 
 		'list': 			{ 'controller':'ChannelsController', 'method':'list' },
 		'info': 			{ 'controller':'ChannelsController', 'method':'info', 'args':['name'] },
@@ -41,8 +40,8 @@ class TelnetClient(AppClient):
 		'time': 			{ 'controller':'SystemsController', 'method':'time' },
 
 		'memory': 			{ 'controller':'SystemsController', 'method':'memory' },
-		'test': 			{ 'controller':'SystemsController', 'method':'test' },
-		'ping': 			{ 'controller':'SystemsController', 'method':'ping' }
+		'test': 				{ 'controller':'SystemsController', 'method':'test' },
+		'ping': 				{ 'controller':'SystemsController', 'method':'ping' }
 
 		# ,
 		# 'hello': { 'controller':'HelpsController', 'method':'hello' },

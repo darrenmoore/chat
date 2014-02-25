@@ -114,12 +114,12 @@ USER_PASSWORD_INVALID = {
 	'success': False
 }
 
-USER_AWAY = {
-	'message': "You are away"
+USER_STATUS = {
+	'message': "Your status is now '%(status)s'"
 }
 
-USER_UNAWAY = {
-	'message': "You are not away"
+USER_STATUS_INVALID = {
+	'message': "Invalid status '%(status)s'"
 }
 
 USER_SET = {

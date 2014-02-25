@@ -183,17 +183,35 @@ class TestUser(unittest.TestCase):
 	 	result = self.client.send(b'login %s %s' % (username, password_new))
 	 	self.assertEqual(self.client.reply('USER_LOGIN'), result)
 
-	def test_away(self):
-		username = self.client.register_login()
-	 	result = self.client.send(b'away')
-	 	self.assertEqual(self.client.reply('USER_AWAY'), result)
+	def test_status_away(self):
+		status = 'away'
+		self.client.register_login()
+	 	result = self.client.send(b'status %s' % status)
+	 	self.assertEqual(self.client.reply('USER_STATUS',{ 'status':status }), result)
 
-	def test_unaway(self):
-		username = self.client.register_login()
-	 	result = self.client.send(b'away')
-	 	result = self.client.send(b'unaway')
-	 	self.assertEqual(self.client.reply('USER_UNAWAY'), result)
+	def test_status_offline(self):
+		status = 'offline'
+		self.client.register_login()
+	 	result = self.client.send(b'status %s' % status)
+	 	self.assertEqual(self.client.reply('USER_STATUS',{ 'status':status }), result)
 
+	def test_status_dnd(self):
+		status = 'dnd'
+		self.client.register_login()
+	 	result = self.client.send(b'status %s' % status)
+	 	self.assertEqual(self.client.reply('USER_STATUS',{ 'status':status }), result)
+
+	def test_status_online(self):
+		status = 'online'
+		self.client.register_login()
+	 	result = self.client.send(b'status %s' % status)
+	 	self.assertEqual(self.client.reply('USER_STATUS',{ 'status':status }), result)
+
+	def test_status_invalid(self):
+		status = 'foobar'
+		self.client.register_login()
+	 	result = self.client.send(b'status %s' % status)
+	 	self.assertEqual(self.client.reply('USER_STATUS_INVALID',{ 'status':status }), result)
 
 if __name__ == '__main__':
   unittest.main()

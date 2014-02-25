@@ -26,11 +26,11 @@ if __name__ == '__main__':
   # test_stress = runner.TestLoader().loadModule(test_stress)
   # suite.addTests(test_stress)
 
-  test_utils = runner.TestLoader().loadModule(test_utils)
-  suite.addTests(test_utils)
+  # test_utils = runner.TestLoader().loadModule(test_utils)
+  # suite.addTests(test_utils)
 
-  # test_user = runner.TestLoader().loadModule(test_user)
-  # suite.addTests(test_user)
+  test_user = runner.TestLoader().loadModule(test_user)
+  suite.addTests(test_user)
 
   # test_channel = runner.TestLoader().loadModule(test_channel)
   # suite.addTests(test_channel)
