@@ -64,8 +64,11 @@ def print_warn(msg):
     if VERBOSITY_LEVEL > 0:
         print '-W- %s' % msg
         
-def generate_token():
-    return str(uuid.uuid4())
+def generate_token(type = 'long'):
+    token = str(uuid.uuid4())
+    if type == 'short':
+        token = token[0:8]
+    return token
         
 def random_word(length = 11):
     return ''.join(random.choice(string.lowercase) for i in range(length))

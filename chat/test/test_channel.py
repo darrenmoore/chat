@@ -6,7 +6,6 @@ from chat.utils import *
 sys.path.insert(0, os.path.dirname(__file__))
 
 from chat.test.client import Client
-import chat.codes as c
 
 class TestChannel(unittest.TestCase):
 

@@ -7,6 +7,7 @@ from chat.test import test_channel
 # from chat.test import test_protocol
 from chat.test import test_email
 from chat.test import test_stress
+from chat.test import test_utils
 
 
 if __name__ == '__main__':
@@ -22,8 +23,11 @@ if __name__ == '__main__':
   #test_email = runner.TestLoader().loadModule(test_email)
   #suite.addTests(test_email)
 
-  test_stress = runner.TestLoader().loadModule(test_stress)
-  suite.addTests(test_stress)
+  # test_stress = runner.TestLoader().loadModule(test_stress)
+  # suite.addTests(test_stress)
+
+  test_utils = runner.TestLoader().loadModule(test_utils)
+  suite.addTests(test_utils)
 
   # test_user = runner.TestLoader().loadModule(test_user)
   # suite.addTests(test_user)

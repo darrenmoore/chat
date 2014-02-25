@@ -31,7 +31,7 @@ class UsersController(AppController):
 		user['password'] = password
 		user['email'] = email
 		user['token'] = generate_token()
-		user['validate_email_token'] = generate_token()
+		user['validate_email_token'] = generate_token(type='short')
 		user.save()
 		user.login(self.request);
 		self.emailer.send(user['email'], 'Registered!', 'register', user)
