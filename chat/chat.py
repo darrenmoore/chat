@@ -71,4 +71,4 @@ class Chat():
 	def server(self):
 		print('Loading Server')
 		self.srv = Server()
-		self.srv.start(self, '127.0.0.1',  2020)
+		self.srv.start(self)

@@ -13,19 +13,19 @@ class Server(Factory):
         self.protocol = protocol
         return
 
-    def start(self, Chat, host, port):
+    def start(self, Chat):
         self.connections_count = 0
         self.users = {}
-        self.host = host
-        self.port = port
+        self.host = '127.0.0.1'
+        self.port = 2020
         self.Chat = Chat
-        self._start();
-
-    def _start(self):
-        print('Starting to listen on port %s' % self.port)
-        reactor.listenTCP(self.port, Server(self.Chat, 'telnet'))
-        reactor.listenTCP(8080, Server(self.Chat, 'http'))
+        self._listen(2020,'telnet');
+        self._listen(8080,'http');
         reactor.run()
+
+    def _listen(self, port, protocol):
+        print('Starting to listen on port %s' % port)
+        reactor.listenTCP(port, Server(self.Chat, protocol))
 
     def buildProtocol(self, addr):
         if self.protocol == 'telnet':

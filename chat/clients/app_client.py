@@ -38,14 +38,15 @@ class AppClient(LineReceiver):
             self.transport.loseConnection()
 
     def relay(self, sessions = None, code = None, *args):
-        if sessions is None:
-            sessions = []
-            for sid in self.Chat.sessions:
-                sessions.append(sid)
+        pass
+        # if sessions is None:
+        #     sessions = []
+        #     for sid in self.Chat.sessions:
+        #         sessions.append(sid)
 
-        for sid in sessions:
-            if self.Chat.sessions[sid]:
-                self.Chat.sessions[sid].client.send(code, *args)
+        # for sid in sessions:
+        #     if self.Chat.sessions[sid]:
+        #         self.Chat.sessions[sid].client.send(code, *args)
 
     def send(self, code, data = None):
         protocol = self.get_protocol()

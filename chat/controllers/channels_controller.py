@@ -1,7 +1,6 @@
 from chat.controllers.app_controller import AppController
 from chat.validators import *
 
-import chat.codes as c
 from chat.models.channel import Channel
 
 
