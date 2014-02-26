@@ -9,8 +9,8 @@ from chat.models.email import Email
 
 from mongokit import Document, Connection
 
-import chat.replies as Replies
-
+import chat.protocols.replies as Replies
+	
 
 class Client(): 
 

@@ -13,8 +13,8 @@ from models.channel import Channel
 from models.post import Post
 from models.email import Email
 
-from protocols.text_protocol import TextProtocol
-from protocols.json_protocol import JsonProtocol
+from protocols.text.text_protocol import TextProtocol
+from protocols.json.json_protocol import JsonProtocol
 
 from server import Server
 from session import Session
