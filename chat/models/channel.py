@@ -22,11 +22,12 @@ class Channel(Document):
 			'twitter': basestring,
 			'instagram': basestring
 		},
-		'modes': {
+		'mode': {
 			'private': bool,
 			'moderated': bool,
 			'registered_only': bool
 		},
+		'access_token': basestring,
 		'token': basestring,
 		'creator': User,							#Who created the channel
 		'admins': list,								#Admins
@@ -39,7 +40,7 @@ class Channel(Document):
 	required_fields = ["name"]
 
 	default_values = {
-		'modes': {
+		'mode': {
 			'private': False,							#Cannot be searched for, requires invite
 			'moderated': False,						#Only admins can post
 			'registered_only': True				#Only registered users can post
@@ -62,7 +63,39 @@ class Channel(Document):
 		self['creator'] = user
 		self['admins'] = [ user ]
 		self['token'] = generate_token()
+		self['access_token'] = generate_token()
+		self['mode']['private'] = False
+		self['mode']['moderated'] = False
+		self['mode']['registered_only'] = True
 		self.save()
+
+	def mode(self, user, mode, value = None):
+		if self.user_is_admin(user) is False and value is not None:
+			return 'NO_PERMISSION'
+
+		if mode not in ['private','moderated','registered_only']:
+			return 'CHANNEL_MODE_NOT_FOUND'
+
+		if value is None:
+			return 'CHANNEL_MODE_VALUE'
+
+		if value == 'true' or value == 'on':
+			value = True
+		elif value == 'false' or value == 'off':
+			value = False
+		else:
+			return 'CHANNEL_MODE_INVALID_VALUE'
+
+		self['mode'][mode] = value
+		self.save()
+		return 'CHANNEL_MODE_SET'
+
+
+	def user_is_admin(self, user):
+		if user in self['admins']:
+			return True
+		return False
+
 
 	def relay(self, client, line, data):
 		sessions = []

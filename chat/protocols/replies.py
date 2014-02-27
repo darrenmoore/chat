@@ -31,6 +31,12 @@ WELCOME = {
 }
 
 
+NO_PERMISSION = {
+	'message': "No permission",
+	'success': False,
+	'header': '401'
+}
+
 ERR_UNKNOWN = {
 	'message': "Unknown error occurred",
 	'success': False,
@@ -66,6 +72,7 @@ ERR_UNKNOWN = {
 	'success': False,
 	'header': '500'
 }
+
 NOT_LOGGED_IN = {
 	'message': "Not logged in",
 	'success': False,
@@ -226,6 +233,24 @@ CHANNEL_PART = {
 
 CHANNEL_PART_NOT_JOINED = {
 	'message': "Not joined %(name)s"
+}
+
+CHANNEL_MODE_VALUE = {
+	'message': "Channel mode %(field)s is %(mode_value)s"
+}
+
+CHANNEL_MODE_SET = {
+	'message': "Channel mode %(field)s set to %(mode_value)s"
+}
+
+CHANNEL_MODE_NOT_FOUND = {
+	'message': "Channel mode %(field)s not found",
+	'success': False
+}
+
+CHANNEL_MODE_INVALID_VALUE = {
+	'message': "Invalid mode value '%(value)s'. Use 'on' or 'off'",
+	'success': False
 }
 
 CHANNEL_USER_LIST = {

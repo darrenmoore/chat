@@ -28,6 +28,7 @@ class TelnetClient(AppClient):
 		'part': 			{ 'controller':'ChannelsController', 'method':'part', 'args':['name'] },
 		'follow': 		{ 'controller':'ChannelsController', 'method':'follow', 'args':['name'] },
 		'unfollow': 	{ 'controller':'ChannelsController', 'method':'unfollow', 'args':['name'] },
+		'mode': 			{ 'controller':'ChannelsController', 'method':'mode', 'args': ['name','field','value'] },
 
 		'post': 			{ 'controller':'PostsController', 'method':'add', 'args':['channel','data*'] },
 		'like': 			{ 'controller':'PostsController', 'method':'like', 'args':['post_id'] },
@@ -84,11 +85,17 @@ class TelnetClient(AppClient):
 			key = 0
 			for field in route['args']:
 				key += 1
-				value = split[key]
-				if field[-1:] == '*':
-					field = field[0:-1]
-					value = ' '.join(split[key:])
-				data[field] = value
+
+				if key >= len(split):
+					#args out of range, maybe not enough args passed
+					#check if arg is required
+					pass
+				else:
+					value = split[key]
+					if field[-1:] == '*':
+						field = field[0:-1]
+						value = ' '.join(split[key:])
+					data[field] = value
 
 		return {
 			'route':route,

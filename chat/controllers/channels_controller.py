@@ -48,6 +48,23 @@ class ChannelsController(AppController):
 		check = channel.part(self.request.user(), self.request)
 		return { "code":'CHANNEL_PART', "data":channel }
 
+	def mode(self, name, field, value = None):
+		if value is not None and self.request.logged_in() == False:
+			return 'ERR_NOT_LOGGED_IN'
+
+		channel = self.db.Channel.find_one({ 'name':name })
+		if channel is None:
+		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
+
+		user = self.request.user()
+		code = channel.mode(user, field, value)
+
+		mode_value = None
+		if field in channel['mode']:
+			mode_value = channel['mode'][field]
+
+		return { "code":code, "data":{"field":field,"value":value,"mode_value":mode_value} }
+
 	def follow(self, name):
 		channel = self.db.Channel.find_one({ 'name':name })
 		if channel is None:
