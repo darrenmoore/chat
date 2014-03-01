@@ -29,6 +29,7 @@ class TelnetClient(AppClient):
 		'follow': 		{ 'controller':'ChannelsController', 'method':'follow', 'args':['name'] },
 		'unfollow': 	{ 'controller':'ChannelsController', 'method':'unfollow', 'args':['name'] },
 		'mode': 			{ 'controller':'ChannelsController', 'method':'mode', 'args': ['name','field','value'] },
+		'invite': 		{ 'controller':'ChannelsController', 'method':'invite', 'args':['name','username'] },
 
 		'post': 			{ 'controller':'PostsController', 'method':'add', 'args':['channel','data*'] },
 		'like': 			{ 'controller':'PostsController', 'method':'like', 'args':['post_id'] },
@@ -36,7 +37,6 @@ class TelnetClient(AppClient):
 		
 		'quit': 			{ 'controller':'UsersController', 'method':'quit' },
 		'whois': 			{ 'controller':'UsersController', 'method':'whois', 'args':['username'] },
-		'invite': 		{ 'controller':'ChannelsController', 'method':'invite', 'args':['channel','username'] },
 		'kick': 			{ 'controller':'ChannelsController', 'method':'kick', 'args':['channel','username'] },
 		'time': 			{ 'controller':'SystemsController', 'method':'time' },
 

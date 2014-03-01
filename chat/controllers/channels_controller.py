@@ -33,32 +33,37 @@ class ChannelsController(AppController):
 		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
 		if channel.already_joined(self.request.user(), name):
 			return { "code":'CHANNEL_JOINED_ALREADY', "data":{"name":name} }
-		user = self.request.user()
-		user['joined'].append(channel)
-		channel.join(user, self.request)
-		return { "code":'CHANNEL_JOIN', "data":channel }
+		code = channel.join(self.request.user(), self.request)
+		return { "code":code, "data":channel }
 
 	def part(self, name):
 		channel = self.db.Channel.find_one({ 'name':name })
 		if channel is None:
 		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
 		if not channel.already_joined(self.request.user(), name):
-			return { "code":'CHANNEL_PART_NOT_JOINED', "data":{"name":name} }
+			return { "code":'CHANNEL_NOT_JOINED', "data":{"name":name} }
 		user = self.request.user()
 		check = channel.part(self.request.user(), self.request)
 		return { "code":'CHANNEL_PART', "data":channel }
 
-	def mode(self, name, field, value = None):
-		if value is not None and self.request.logged_in() == False:
-			return 'ERR_NOT_LOGGED_IN'
-
+	def invite(self, name, username):
 		channel = self.db.Channel.find_one({ 'name':name })
 		if channel is None:
 		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
+		user = self.db.User.find_one({ 'username':username })
+		if user is None:
+		 	return { "code":'USER_NOT_EXIST', "data":{"name":name} }
+		code = channel.invite(user)
+		return { "code":code, "data":{'name':channel['name'],'username':username} }
 
+	def mode(self, name, field, value = None):
+		if value is not None and self.request.logged_in() == False:
+			return 'ERR_NOT_LOGGED_IN'
+		channel = self.db.Channel.find_one({ 'name':name })
+		if channel is None:
+		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
 		user = self.request.user()
 		code = channel.mode(user, field, value)
-
 		mode_value = None
 		if field in channel['mode']:
 			mode_value = channel['mode'][field]
@@ -71,10 +76,8 @@ class ChannelsController(AppController):
 		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
 		if channel.already_following(self.request.user(), name):
 			return { "code":'CHANNEL_FOLLOWING_ALREADY', "data":{"name":name} }
-		user = self.request.user()
-		channel['following'].append(user)
-		user['following'].append(channel)
-		return { "code":'CHANNEL_FOLLOW', "data":channel }
+		code = channel.follow(self.request.user(), self.request)
+		return { "code":code, "data":channel }
 
 	def unfollow(self, name):
 		channel = self.db.Channel.find_one({ 'name':name })

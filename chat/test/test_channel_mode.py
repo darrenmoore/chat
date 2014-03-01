@@ -16,6 +16,14 @@ class TestChannelMode(unittest.TestCase):
 	def tearDown(self):
 		self.client.connection.close()
 
+	def test_set_anonymous(self):
+		result = self.mode_on('anonymous','on')
+	 	self.assertEqual(self.client.reply('CHANNEL_MODE_SET',{ 'field':'anonymous', 'mode_value':True }), result)
+
+	def test_set_anonymous_ff(self):
+		result = self.mode_on('anonymous','off')
+	 	self.assertEqual(self.client.reply('CHANNEL_MODE_SET',{ 'field':'anonymous', 'mode_value':False }), result)
+
 	def test_set_private(self):
 		result = self.mode_on('private','on')
 	 	self.assertEqual(self.client.reply('CHANNEL_MODE_SET',{ 'field':'private', 'mode_value':True }), result)
@@ -63,21 +71,63 @@ class TestChannelMode(unittest.TestCase):
 	 	result = self.client.send(b'mode #%s %s %s' % (channel, 'private', 'on'))
 	 	self.assertEqual(self.client.reply('NO_PERMISSION'), result)
 
-	# def test_private_join(self):
-	# 	'''Make sure cannot join private channel'''
-	# 	pass
+	def test_private_join(self):
+		'''Make sure cannot join private channel'''
+		self.client.register_login()
+		channel = random_word()
+	 	self.client.send(b'create #%s' % channel)
+	 	a = self.client.send(b'mode #%s %s %s' % (channel, 'private', 'on'))
+	 	self.client.send(b'logout')
+		self.client.register_login()
+	 	result = self.client.send(b'join #%s' % channel)
+	 	self.assertEqual(self.client.reply('CHANNEL_PRIVATE', {'name':'#'+channel}), result)
 
-	# def test_private_join_token(self):
-	# 	'''Join private channel with access token'''
-	# 	pass
+	def test_not_private_join(self):
+		self.client.register_login()
+		channel = random_word()
+	 	self.client.send(b'create #%s' % channel)
+	 	self.client.send(b'logout')
+		self.client.register_login()
+	 	result = self.client.send(b'join #%s' % channel)
+	 	self.assertEqual(self.client.reply('CHANNEL_JOIN', {'name':'#'+channel}), result)
 
-	# def test_private_join_token_invalid(self):
-	# 	'''Join private channel with invalid access token'''
-	# 	pass
+	def test_private_follow(self):
+		self.client.register_login()
+		channel = random_word()
+	 	self.client.send(b'create #%s' % channel)
+	 	a = self.client.send(b'mode #%s %s %s' % (channel, 'private', 'on'))
+	 	self.client.send(b'logout')
+		self.client.register_login()
+	 	result = self.client.send(b'follow #%s' % channel)
+	 	self.assertEqual(self.client.reply('CHANNEL_PRIVATE', {'name':'#'+channel}), result)
 
-	# def test_private_follow(self):
-	# 	'''Make sure cannot follow private channel'''
-	# 	pass
+	def test_not_private_follow(self):
+		self.client.register_login()
+		channel = random_word()
+	 	self.client.send(b'create #%s' % channel)
+	 	self.client.send(b'logout')
+		self.client.register_login()
+	 	result = self.client.send(b'follow #%s' % channel)
+	 	self.assertEqual(self.client.reply('CHANNEL_FOLLOW', {'name':'#'+channel}), result)
+
+	def test_private_invite_join(self):
+		channel = random_word()
+		invited_username = random_word()
+		invited_password = random_word()
+
+		self.client.register_login(invited_username, invited_password)
+	 	self.client.send(b'logout')
+
+		b = self.client.register_login()
+	 	self.client.send(b'create #%s' % channel)
+	 	self.client.send(b'mode #%s %s %s' % (channel, 'private', 'on'))
+	 	self.client.send(b'invite #%s %s' % (channel, invited_username))
+	 	self.client.send(b'logout')
+	 	self.client.send(b'login %s %s' % (invited_username, invited_password))
+	 	result = self.client.send(b'join #%s' % channel)
+	 	self.assertEqual(self.client.reply('CHANNEL_JOIN', {'name':'#'+channel}), result)
+
+
 
 	# def test_moderated(self):
 	# 	'''Cannot post to moderated channel and user is not moderator'''

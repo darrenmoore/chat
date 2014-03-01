@@ -25,7 +25,8 @@ class Channel(Document):
 		'mode': {
 			'private': bool,
 			'moderated': bool,
-			'registered_only': bool
+			'registered_only': bool,
+			'anonymous': bool
 		},
 		'access_token': basestring,
 		'token': basestring,
@@ -33,6 +34,7 @@ class Channel(Document):
 		'admins': list,								#Admins
 		'joined': list,								#Users in channel currently
 		'following': list,						#Users who are following the channel
+		'invited': list,							#Invited users
 		'activity': list,							#All chat history for this channel
 		'created': datetime.datetime
 	}
@@ -67,13 +69,14 @@ class Channel(Document):
 		self['mode']['private'] = False
 		self['mode']['moderated'] = False
 		self['mode']['registered_only'] = True
+		self['mode']['anonymous'] = False
 		self.save()
 
 	def mode(self, user, mode, value = None):
 		if self.user_is_admin(user) is False and value is not None:
 			return 'NO_PERMISSION'
 
-		if mode not in ['private','moderated','registered_only']:
+		if mode not in ['private','moderated','registered_only','anonymous']:
 			return 'CHANNEL_MODE_NOT_FOUND'
 
 		if value is None:
@@ -118,14 +121,39 @@ class Channel(Document):
 				return True
 		return False
 
+	def follow(self, user, client):
+		if self.is_private() and user not in self['invited']:
+			return 'CHANNEL_PRIVATE'
+		self.collection.update(
+			{ "_id": self["_id"] }, 
+			{	"$push": { "following":user } }
+		);
+		self.reload()
+		user['following'].append(self)
+		return 'CHANNEL_FOLLOW'
+
+	def is_invited(self, user):
+		for invited in self['invited']:
+			if invited['username'] == user['username']:
+				return True
+		return False
+
 	def join(self, user, client):
+		if self.is_private() and self.is_invited(user) == False:
+			return 'CHANNEL_PRIVATE'
 		self.collection.update(
 			{ "_id": self["_id"] }, 
 			{	"$push": { "joined":user } }
 		);
 		self.reload()
+		user['joined'].append(self)
 		self.relay(client, 'CHANNEL_USER_JOINED', { 'username': user['username'], 'channel': self['name'] })
-		return True
+		return 'CHANNEL_JOIN'
+
+	def is_private(self):
+		if self['mode']['private']:
+			return True
+		return False
 
 	def part(self, user, client):
 		name = self['name']
@@ -146,3 +174,13 @@ class Channel(Document):
 				return True
 			index += 1
 		return False
+
+	def invite(self, user):
+		if user in self['invited']:
+			return 'CHANNEL_INVITE_ALREADY'
+		self.collection.update(
+			{ "_id": self["_id"] }, 
+			{	"$push": { "invited":user } }
+		);
+		self.reload()
+		return 'CHANNEL_INVITE'

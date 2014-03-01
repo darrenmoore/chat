@@ -39,9 +39,13 @@ class Client():
 		result = self.connection.recv(1024).rstrip()
 		return result
 
-	def register_login(self):
-		username = random_word()
-		password = random_word()
+	def register_login(self, username = None, password = None):
+		if username is None:
+			username = random_word()
+
+		if password is None:
+			password = random_word()
+			
 		email = random_email()
 
 		result = self.send(b'register %s %s %s' % (username, password, email))

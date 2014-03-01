@@ -133,6 +133,11 @@ USER_SET = {
 	'message': "Set %(field)s to \"%(value)s\""
 }
 
+USER_NOT_EXIST = {
+	'message': "User %(username)s does not exist",
+	'success': False
+}
+
 USER_PROTOCOL = {
 	'message': "Protocol changed"
 }
@@ -215,6 +220,11 @@ CHANNEL_NO_SUCH_CHANNEL = {
 	'success': False
 }
 
+CHANNEL_PRIVATE = {
+	'message': '%(name)s is private',
+	'success': False
+}
+
 CHANNEL_USER_JOINED = {
 	'message': "%(username)s has joined %(channel)s"
 }
@@ -231,7 +241,7 @@ CHANNEL_PART = {
 	'message': "Parted %(name)s"
 }
 
-CHANNEL_PART_NOT_JOINED = {
+CHANNEL_NOT_JOINED = {
 	'message': "Not joined %(name)s"
 }
 
@@ -255,6 +265,14 @@ CHANNEL_MODE_INVALID_VALUE = {
 
 CHANNEL_USER_LIST = {
 	'method': user_list
+}
+
+CHANNEL_INVITE = {
+	'message': "%(username)s has been invited %(name)s"
+}
+
+CHANNEL_INVITE_ALREADY = {
+	'message': "%(username)s has been invited %(name)s already"
 }
 
 CHANNEL_NOT_EXIST = {

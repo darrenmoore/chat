@@ -18,12 +18,12 @@ if __name__ == '__main__':
   tests = [
     # test_email,
     # test_protocol,
-    #test_post,
-    # test_parse_url,
-    # test_stress,
-    # test_utils,
-    # test_channel,
-    # test_user,
+    # test_post,
+    test_parse_url,
+    test_stress,
+    test_utils,
+    test_channel,
+    test_user,
     test_channel_mode
   ]
 
