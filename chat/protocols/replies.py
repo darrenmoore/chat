@@ -326,6 +326,26 @@ CHANNEL_ADMINS_NOT_ADDED = {
 	'message': '%(username)s is not an admin of %(name)s'
 }
 
+CHANNEL_BANNED = {
+	'message': 'You are banned from %(name)s'
+}
+
+CHANNEL_BAN = {
+	'message': '%(username)s is banned from %(name)s'
+}
+
+CHANNEL_BANNED_ALREADY = {
+	'message': '%(username)s is banned already %(name)s'
+}
+
+CHANNEL_UNBAN = {
+	'message': '%(username)s is unbanned from %(name)s'
+}
+
+CHANNEL_UNBAN_NOT_BANNED = {
+	'message': '%(username)s is not banned from %(name)s'
+}
+
 
 POST_TEXT = {
 	'method': post_text

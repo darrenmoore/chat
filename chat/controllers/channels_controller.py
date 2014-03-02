@@ -31,6 +31,8 @@ class ChannelsController(AppController):
 		channel = self.db.Channel.find_one({ 'name':name })
 		if channel is None:
 		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
+		if channel.is_banned(self.request.user()):
+			return { "code":'CHANNEL_BANNED', "data":{"name":name} }
 		if channel.already_joined(self.request.user(), name):
 			return { "code":'CHANNEL_JOINED_ALREADY', "data":{"name":name} }
 		code = channel.join(self.request.user(), self.request)
@@ -74,6 +76,8 @@ class ChannelsController(AppController):
 		channel = self.db.Channel.find_one({ 'name':name })
 		if channel is None:
 		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
+		if channel.is_banned(self.request.user()):
+			return { "code":'CHANNEL_BANNED', "data":{"name":name} }
 		if channel.already_following(self.request.user(), name):
 			return { "code":'CHANNEL_FOLLOWING_ALREADY', "data":{"name":name} }
 		code = channel.follow(self.request.user(), self.request)
@@ -117,6 +121,30 @@ class ChannelsController(AppController):
 		if user is None:
 		 	return { "code":'USER_NOT_EXIST', "data":{"username":username} }
 		code = channel.admin_remove(user)
+		return { "code":code, "data":{'name':channel['name'],'username':user['username']} }
+
+	def ban(self, name, username):
+		channel = self.db.Channel.find_one({ 'name':name })
+		if channel is None:
+		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
+		if channel.is_admin(self.request.user()) == False:
+		 	return 'NO_PERMISSION'
+		user = self.db.User.find_one({ 'username':username })
+		if user is None:
+		 	return { "code":'USER_NOT_EXIST', "data":{"username":username} }
+		code = channel.ban(user)
+		return { "code":code, "data":{'name':channel['name'],'username':user['username']} }
+
+	def unban(self, name, username):
+		channel = self.db.Channel.find_one({ 'name':name })
+		if channel is None:
+		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
+		if channel.is_admin(self.request.user()) == False:
+		 	return 'NO_PERMISSION'
+		user = self.db.User.find_one({ 'username':username })
+		if user is None:
+		 	return { "code":'USER_NOT_EXIST', "data":{"username":username} }
+		code = channel.unban(user)
 		return { "code":code, "data":{'name':channel['name'],'username':user['username']} }
 
 	# def joined(self, name):

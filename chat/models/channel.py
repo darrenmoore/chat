@@ -37,6 +37,7 @@ class Channel(Document):
 		'joined': list,								#Users in channel currently
 		'following': list,						#Users who are following the channel
 		'invited': list,							#Invited users
+		'banned': list,								#List of users who are banned
 		'activity': list,							#All chat history for this channel
 		'created': datetime.datetime
 	}
@@ -207,10 +208,36 @@ class Channel(Document):
 	def admin_remove(self, user):
 		if user not in self['admins']:
 			return 'CHANNEL_ADMINS_NOT_ADDED'
-
 		index = 0
 		for admins in self['admins']:
 			if admins['username'] == user['username']:
 				del self['admins'][index]
 				return 'CHANNEL_ADMINS_REMOVE'
+			index += 1
+
+	def is_banned(self, user):
+		for admin in self['banned']:
+			if admin['username'] == user['username']:
+				return True
+		return False
+
+	def ban(self, user):
+		if user in self['banned']:
+			return 'CHANNEL_BANNED_ALREADY'
+		self.collection.update(
+			{ "_id": self["_id"] }, 
+			{	"$push": { "banned":user } }
+		);
+		self.reload()
+		return 'CHANNEL_BAN'
+
+	def unban(self, user):
+		if user not in self['banned']:
+			return 'CHANNEL_UNBAN_NOT_BANNED'
+		index = 0
+		for banned in self['banned']:
+			if banned['username'] == user['username']:
+				del self['banned'][index]
+				self.save()
+				return 'CHANNEL_UNBAN'
 			index += 1
