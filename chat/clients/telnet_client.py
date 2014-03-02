@@ -30,6 +30,9 @@ class TelnetClient(AppClient):
 		'unfollow': 	{ 'controller':'ChannelsController', 'method':'unfollow', 'args':['name'] },
 		'mode': 			{ 'controller':'ChannelsController', 'method':'mode', 'args': ['name','field','value'] },
 		'invite': 		{ 'controller':'ChannelsController', 'method':'invite', 'args':['name','username'] },
+		'admins': 		{ 'controller':'ChannelsController', 'method':'admins', 'args':['name'] },
+		'admin_add': 		{ 'controller':'ChannelsController', 'method':'admins_add', 'args':['name','username'] },
+		'admin_remove': { 'controller':'ChannelsController', 'method':'admins_remove', 'args':['name','username'] },
 
 		'post': 			{ 'controller':'PostsController', 'method':'add', 'args':['channel','data*'] },
 		'like': 			{ 'controller':'PostsController', 'method':'like', 'args':['post_id'] },

@@ -47,7 +47,7 @@ class Channel(Document):
 		'mode': {
 			'private': False,							#Cannot be searched for, requires invite
 			'moderated': False,						#Only admins can post
-			'registered_only': True				#Only registered users can post
+			'registered_only': True,			#Only registered users can post
 			'anonymous': False						#Anonymous posts
 		}
 	}
@@ -187,3 +187,30 @@ class Channel(Document):
 		);
 		self.reload()
 		return 'CHANNEL_INVITE'
+
+	def is_admin(self, user):
+		for admin in self['admins']:
+			if admin['username'] == user['username']:
+				return True
+		return False
+
+	def admin_add(self, user):
+		if user in self['admins']:
+			return 'CHANNEL_ADMINS_ALREADY'
+		self.collection.update(
+			{ "_id": self["_id"] }, 
+			{	"$push": { "admins":user } }
+		);
+		self.reload()
+		return 'CHANNEL_ADMINS_ADD'
+
+	def admin_remove(self, user):
+		if user not in self['admins']:
+			return 'CHANNEL_ADMINS_NOT_ADDED'
+
+		index = 0
+		for admins in self['admins']:
+			if admins['username'] == user['username']:
+				del self['admins'][index]
+				return 'CHANNEL_ADMINS_REMOVE'
+			index += 1

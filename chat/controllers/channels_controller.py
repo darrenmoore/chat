@@ -89,10 +89,40 @@ class ChannelsController(AppController):
 		check = channel.unfollow(self.request.user(), name)
 		return { "code":'CHANNEL_UNFOLLOW', "data":channel }
 
-	def joined(self, name):
+	def admins(self, name):
 		channel = self.db.Channel.find_one({ 'name':name })
 		if channel is None:
 		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
-		if channel['joined'] is None:
+		return { "code":'CHANNEL_ADMINS_LIST', "data":channel }
+
+	def admins_add(self, name, username):
+		channel = self.db.Channel.find_one({ 'name':name })
+		if channel is None:
 		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
-		return { "code":'CHANNEL_USER_LIST', "data":channel }
+		if channel.is_admin(self.request.user()) == False:
+		 	return 'NO_PERMISSION'
+		user = self.db.User.find_one({ 'username':username })
+		if user is None:
+		 	return { "code":'USER_NOT_EXIST', "data":{"username":username} }
+		code = channel.admin_add(user)
+		return { "code":code, "data":{'name':channel['name'],'username':user['username']} }
+
+	def admins_remove(self, name, username):
+		channel = self.db.Channel.find_one({ 'name':name })
+		if channel is None:
+		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
+		if channel.is_admin(self.request.user()) == False:
+		 	return 'NO_PERMISSION'
+		user = self.db.User.find_one({ 'username':username })
+		if user is None:
+		 	return { "code":'USER_NOT_EXIST', "data":{"username":username} }
+		code = channel.admin_remove(user)
+		return { "code":code, "data":{'name':channel['name'],'username':user['username']} }
+
+	# def joined(self, name):
+	# 	channel = self.db.Channel.find_one({ 'name':name })
+	# 	if channel is None:
+	# 	 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
+	# 	if channel['joined'] is None:
+	# 	 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
+	# 	return { "code":'CHANNEL_USER_LIST', "data":channel }

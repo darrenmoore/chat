@@ -143,6 +143,78 @@ class TestChannel(unittest.TestCase):
 	 	result = self.client.send(b'invite %s %s' % (channel, username))
 	 	self.assertEqual(self.client.reply('USER_NOT_EXIST',{ "username":username }), result)
 
+	def test_admins_list(self):
+		channel = random_channel()
+		username = self.client.register_login()
+	 	self.client.send(b'create %s' % channel)
+	 	result = self.client.send(b'admins %s' % channel)
+	 	self.assertTrue(username in result)
+
+	def test_admins_add(self):
+		admin_username = self.client.register_login()
+		result = self.client.send(b'logout')
+		channel = random_channel()
+		username = self.client.register_login()
+	 	self.client.send(b'create %s' % channel)
+	 	result = self.client.send(b'admin_add %s %s' % (channel, admin_username))
+	 	self.assertEqual(self.client.reply('CHANNEL_ADMINS_ADD',{ 'name':channel, "username":admin_username }), result)
+
+	def test_admins_add_no_channel(self):
+		admin_username = self.client.register_login()
+		result = self.client.send(b'logout')
+		channel = random_channel()
+		username = self.client.register_login()
+	 	result = self.client.send(b'admin_add %s %s' % (channel, admin_username))
+	 	self.assertEqual(self.client.reply('CHANNEL_NOT_EXIST',{ 'name':channel }), result)
+
+	def test_admins_add_exists(self):
+		admin_username = self.client.register_login()
+		result = self.client.send(b'logout')
+		channel = random_channel()
+		username = self.client.register_login()
+	 	self.client.send(b'create %s' % channel)
+	 	result = self.client.send(b'admin_add %s %s' % (channel, admin_username))
+	 	result = self.client.send(b'admin_add %s %s' % (channel, admin_username))
+	 	self.assertEqual(self.client.reply('CHANNEL_ADMINS_ALREADY',{ 'name':channel, "username":admin_username }), result)
+
+	def test_admins_add_not_admin(self):
+		channel = random_channel()
+		admin_username = self.client.register_login()
+	 	self.client.send(b'create %s' % channel)
+		result = self.client.send(b'logout')
+		username = self.client.register_login()
+	 	result = self.client.send(b'admin_add %s %s' % (channel, admin_username))
+	 	self.assertEqual(self.client.reply('NO_PERMISSION'), result)
+
+	def test_admins_remove(self):
+		admin_username = self.client.register_login()
+		result = self.client.send(b'logout')
+		channel = random_channel()
+		username = self.client.register_login()
+	 	self.client.send(b'create %s' % channel)
+	 	result = self.client.send(b'admin_add %s %s' % (channel, admin_username))
+	 	result = self.client.send(b'admin_remove %s %s' % (channel, admin_username))
+	 	self.assertEqual(self.client.reply('CHANNEL_ADMINS_REMOVE',{ 'name':channel, "username":admin_username }), result)
+
+	def test_admins_remove_not_admin(self):
+		channel = random_channel()
+		admin_username = self.client.register_login()
+	 	self.client.send(b'create %s' % channel)
+		result = self.client.send(b'logout')
+		username = self.client.register_login()
+	 	result = self.client.send(b'admin_remove %s %s' % (channel, admin_username))
+	 	self.assertEqual(self.client.reply('NO_PERMISSION'), result)
+
+	def test_admins_remove_user_not_added(self):
+		admin_username = self.client.register_login()
+		result = self.client.send(b'logout')
+		channel = random_channel()
+		username = self.client.register_login()
+	 	self.client.send(b'create %s' % channel)
+	 	result = self.client.send(b'admin_remove %s %s' % (channel, admin_username))
+	 	self.assertEqual(self.client.reply('CHANNEL_ADMINS_NOT_ADDED',{ 'name':channel, "username":admin_username }), result)
+
+
 
 	# def test_users(self):
 	# 	name = random_channel()

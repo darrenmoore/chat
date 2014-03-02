@@ -12,6 +12,13 @@ def user_list(channel):
 		out.append('%s' % user['username'])
 	return out
 
+def admins_list(channel):
+	out = []
+	print channel['admins']
+	for user in channel['admins']:
+		out.append('%s' % user['username'])
+	return out
+
 def sessions_list(data):
 	out = []
 	for sid in data['sessions']:
@@ -297,6 +304,26 @@ CHANNEL_UNFOLLOW = {
 
 CHANNEL_UNFOLLOW_NOT_FOLLOWING = {
 	'message': "Not following %(name)s"
+}
+
+CHANNEL_ADMINS_LIST = {
+	'method': admins_list
+}
+
+CHANNEL_ADMINS_ADD = {
+	'message': '%(username)s added as an admin to %(name)s'
+}
+
+CHANNEL_ADMINS_ALREADY = {
+	'message': '%(username)s is already an admin of %(name)s'
+}
+
+CHANNEL_ADMINS_REMOVE = {
+	'message': '%(username)s removed as an admin to %(name)s'
+}
+
+CHANNEL_ADMINS_NOT_ADDED = {
+	'message': '%(username)s is not an admin of %(name)s'
 }
 
 
