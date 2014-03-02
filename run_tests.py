@@ -19,12 +19,12 @@ if __name__ == '__main__':
     # test_email,
     # test_protocol,
     # test_post,
-    test_parse_url,
-    test_stress,
-    test_utils,
-    test_channel,
-    test_user,
-    test_channel_mode
+    # test_parse_url,
+    # test_stress,
+    # test_utils,
+    # test_user,
+    # test_channel_mode,
+    test_channel
   ]
 
   for alias in tests:

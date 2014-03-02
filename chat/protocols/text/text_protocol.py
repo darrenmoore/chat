@@ -5,13 +5,16 @@ from chat.utils import *
 class TextProtocol(object):
 
   def process(self, client, code, data):
+    print code
     reply = getattr(Replies, code)
 
     if 'method' in reply:
         output = reply['method'](data)
     else:
         output = reply['message']
-        output = output % data
+
+        if data:
+            output = output % data
 
         # if data:
         #     data = flatten(data)

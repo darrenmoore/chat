@@ -52,9 +52,9 @@ class ChannelsController(AppController):
 		 	return { "code":'CHANNEL_NOT_EXIST', "data":{"name":name} }
 		user = self.db.User.find_one({ 'username':username })
 		if user is None:
-		 	return { "code":'USER_NOT_EXIST', "data":{"name":name} }
+		 	return { "code":'USER_NOT_EXIST', "data":{"username":username} }
 		code = channel.invite(user)
-		return { "code":code, "data":{'name':channel['name'],'username':username} }
+		return { "code":code, "data":{'name':channel['name'],'username':user['username']} }
 
 	def mode(self, name, field, value = None):
 		if value is not None and self.request.logged_in() == False:
