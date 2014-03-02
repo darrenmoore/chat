@@ -20,7 +20,9 @@ class Channel(Document):
 			'url': basestring,
 			'facebook': basestring,
 			'twitter': basestring,
-			'instagram': basestring
+			'instagram': basestring,
+			'avatar_img': basestring,
+			'header_img': basestring
 		},
 		'mode': {
 			'private': bool,
@@ -46,6 +48,7 @@ class Channel(Document):
 			'private': False,							#Cannot be searched for, requires invite
 			'moderated': False,						#Only admins can post
 			'registered_only': True				#Only registered users can post
+			'anonymous': False						#Anonymous posts
 		}
 	}
 
