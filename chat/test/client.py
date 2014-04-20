@@ -49,7 +49,7 @@ class Client():
 		email = random_email()
 
 		result = self.send(b'register %s %s %s' % (username, password, email))
-		result = self.send(b'login %s %s' % (username, password))
+		#result = self.send(b'login %s %s' % (username, password))
 		return username
 
 	def create_channel(self):

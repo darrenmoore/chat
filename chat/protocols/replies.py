@@ -26,7 +26,7 @@ def sessions_list(data):
 	return out
 
 def post_text(post):
-	return '(%s) %s: %s' % (post['channel']['name'], post['user']['username'], post['data'])
+	return '(%s) %s: %s' % (post['recipients'][0]['name'], post['display_name'], post['data'])
 
 
 PONG = {
@@ -346,6 +346,10 @@ CHANNEL_UNBAN_NOT_BANNED = {
 	'message': '%(username)s is not banned from %(name)s'
 }
 
+
+POST_RECEIVED = {
+	'message': 'Received %(sender_ident)s'
+}
 
 POST_TEXT = {
 	'method': post_text

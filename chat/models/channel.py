@@ -45,18 +45,19 @@ class Channel(Document):
 	required_fields = ["name"]
 
 	default_values = {
-		'mode': {
-			'private': False,							#Cannot be searched for, requires invite
-			'moderated': False,						#Only admins can post
-			'registered_only': True,			#Only registered users can post
-			'anonymous': False						#Anonymous posts
-		}
+		'mode.private': False,						#Cannot be searched for, requires invite
+		'mode.moderated': False,					#Only admins can post
+		'mode.registered_only': True,			#Only registered users can post
+		'mode.anonymous': False						#Anonymous posts
 	}
 
 	indexes = [
 		{
 			'fields': [ 'name' ],
 			'unique': True
+		},
+		{
+			'fields': [ 'name', 'profile.title', 'profile.description' ]
 		}
 	]
 
@@ -70,10 +71,6 @@ class Channel(Document):
 		self['admins'] = [ user ]
 		self['token'] = generate_token()
 		self['access_token'] = generate_token()
-		self['mode']['private'] = False
-		self['mode']['moderated'] = False
-		self['mode']['registered_only'] = True
-		self['mode']['anonymous'] = False
 		self.save()
 
 	def mode(self, user, mode, value = None):
@@ -98,6 +95,9 @@ class Channel(Document):
 		return 'CHANNEL_MODE_SET'
 
 
+	def search(self, keywords):
+		return self.collection.database.command("text", self.collection.name, search=keywords)
+
 	def user_is_admin(self, user):
 		if user in self['admins']:
 			return True
@@ -112,6 +112,7 @@ class Channel(Document):
 					sessions.append(sid)
 
 		client.relay(sessions, line, data)
+
 
 	def already_joined(self, user, name):
 		for channel in user['joined']:

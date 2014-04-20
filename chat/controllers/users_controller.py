@@ -5,6 +5,10 @@ from chat.utils import *
 
 class UsersController(AppController):
 
+	_before_filter = {
+
+	}
+
 	def login(self, username, password):
 		user = self.db.User.find_one({ 'username':username })
 		if user is None:

@@ -1,0 +1,17 @@
+
+
+db.Channels.createIndex(
+    {
+        'name': 'text',
+        'profile.title': 'text',
+        'profile.description': 'text'
+    },
+    {
+        weights: {
+	        'name': 10,
+	        'profile.title': 5,
+	        'profile.description': 1
+        }
+    }
+)
+

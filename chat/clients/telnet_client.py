@@ -22,6 +22,7 @@ class TelnetClient(AppClient):
 		'status': 		{ 'controller':'UsersController', 'method':'status', 'args':['value'] },
 
 		'list': 			{ 'controller':'ChannelsController', 'method':'list' },
+		'search': 		{ 'controller':'ChannelsController', 'method':'search', 'args':['keywords'] },
 		'info': 			{ 'controller':'ChannelsController', 'method':'info', 'args':['name'] },
 		'create': 		{ 'controller':'ChannelsController', 'method':'create', 'args': [ 'name' ] },
 		'join': 			{ 'controller':'ChannelsController', 'method':'join', 'args':['name'] },

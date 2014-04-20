@@ -7,13 +7,15 @@ from chat.models.post import Post
 
 class PostsController(AppController):
 
-	def add(self, channel, data, type = "text"):
+	def add(self, channel, data, sender_ident = None, type = "text"):
 		if self.request.logged_in() == False:
 			return 'NOT_LOGGED_IN'
 
 		channel = self.db.Channel.find_one({ 'name':channel })
 		user = self.request.user()
 
-		post = self.db.Post.post(client=self.request, user=user, channel=channel, type=type, data=data)
+		recipients = [ channel ]
+
+		post = self.db.Post.post(client=self.request, user=user, recipients=recipients, data=data)
 		
-		return { "code":'POST_TEXT', "data":post }
+		return { "code":'POST_RECEIVED', "data":post }

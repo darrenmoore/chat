@@ -12,7 +12,8 @@ from chat.test.text_protocol import test_user
 from chat.test.text_protocol import test_channel
 from chat.test.text_protocol import test_channel_mode
 from chat.test.text_protocol import test_channel_ban
-# from chat.test.text_protocol import test_post
+from chat.test.text_protocol import test_channel_search
+from chat.test.text_protocol import test_post
 
 
 if __name__ == '__main__':
@@ -22,14 +23,15 @@ if __name__ == '__main__':
   tests = [
     # test_email,
     # test_protocol,
-    # test_post,
+    # test_channel_search
+    # test_post
     # test_parse_url,
     # test_stress,
     # test_utils,
-    # test_user,
+    test_user
     # test_channel_mode,
     # test_channel,
-    test_channel_ban
+    # test_channel_ban
   ]
 
   for alias in tests:

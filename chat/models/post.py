@@ -2,6 +2,7 @@ from mongokit import Document, Connection
 from chat.validators import *
 from chat.models.channel import Channel
 from chat.models.user import User
+from chat.utils import *
 
 import datetime
 
@@ -10,10 +11,11 @@ class Post(Document):
 	__database__ = 'live'
 
 	structure = {
-		'display_name': basestring,
+		'_id': basestring,							#Guid for this post
+		'display_name': basestring,			#By default the users username but can be changed
+		'sender_ident': basestring,			#If an ident has been passed this will be send back
 		'sender': User,
-		'channel': Channel,
-		'recipient': User,
+		'recipients': list,
 		'format': basestring,
 		'data': basestring,
 		'likes': int,
@@ -32,13 +34,21 @@ class Post(Document):
 	validators = {
 	}
 
-	def post(self, client, user, channel, format, data):
-		self['user'] = user
-		self['channel'] = channel
+	def post(self, client, user, recipients, data, format = 'text', sender_ident = None):
+		self['_id'] = generate_token()
+		if sender_ident is None:
+			self['sender_ident'] = self['_id']
+
+		self['sender'] = user
+		self['recipients'] = recipients
 		self['format'] = format
 		self['data'] = data
+		self['display_name'] = user['username']
 		self.save()
 
-		channel.relay(client, 'POST_TEXT_USER', { 'username': user['username'], 'channel': channel['name'], 'text':data })
+		channel = recipients[0]
 
+		for recipient in recipients:
+			recipient.relay(client, 'POST_TEXT_USER', { 'username': user['username'], 'channel': channel['name'], 'text':data })
+			
 		return self

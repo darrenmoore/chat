@@ -38,15 +38,14 @@ class AppClient(LineReceiver):
             self.transport.loseConnection()
 
     def relay(self, sessions = None, code = None, *args):
-        pass
-        # if sessions is None:
-        #     sessions = []
-        #     for sid in self.Chat.sessions:
-        #         sessions.append(sid)
+        if sessions is None:
+            sessions = []
+            for sid in self.Chat.sessions:
+                sessions.append(sid)
 
-        # for sid in sessions:
-        #     if self.Chat.sessions[sid]:
-        #         self.Chat.sessions[sid].client.send(code, *args)
+        for sid in sessions:
+            if self.Chat.sessions[sid]:
+                self.Chat.sessions[sid].client.send(code, *args)
 
     def send(self, code, data = None):
         protocol = self.get_protocol()
@@ -78,8 +77,14 @@ class AppClient(LineReceiver):
 
     def dispatch(self, controller, method, args):
         controller = getattr(self.Chat, controller)
-        controller.requester(self)
-        result = getattr(controller, method)(**args)
+        controller.set_requester(self)
+        controller.set_method(method)
+
+        if controller.before_filter():
+            result = getattr(controller, method)(**args)
+            controller.after_filter()
+        else:
+            result = controller.get_error()
 
         if result == False:
             result = 'ERR_UNKNOWN_COMMAND'

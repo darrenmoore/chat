@@ -6,6 +6,10 @@ from chat.models.channel import Channel
 
 class ChannelsController(AppController):
 
+	_before_filter = {
+
+	}
+
 	def create(self, name):
 		if self.request.logged_in() == False:
 			return 'ERR_NOT_LOGGED_IN'
@@ -16,6 +20,10 @@ class ChannelsController(AppController):
 		channel = self.db.Channel()
 		channel.create(name, self.request.user())
 		return { "code":'CHANNEL_CREATE', "data":channel }
+
+	def search(self, keywords):
+		channels = self.db.Channel.find_fulltext(keywords)
+		print channels
 
 	def info(self, name):
 		channel = self.db.Channel.find_one({ 'name':name })
